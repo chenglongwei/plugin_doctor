@@ -1,16 +1,16 @@
 create database plugin_doctor;
 use plugin_doctor;
 
-CREATE TABLE `plugin_doctor`.`header_info` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `hook_id` VARCHAR(128) NULL,
-  `timestamps` INT NULL,
-  `tag` VARCHAR(128) NULL,
-  `sequence` INT NULL,
-  `client_request` VARCHAR(4096) NULL,
-  `server_request` VARCHAR(4096) NULL,
-  `server_response` VARCHAR(4096) NULL,
-  `client_response` VARCHAR(4096) NULL,
-  PRIMARY KEY (`id`));
-
-
+CREATE TABLE `header_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `state_machine_id` int(22) DEFAULT NULL,
+  `sequence` int(11) DEFAULT NULL,
+  `timestamps` int(11) DEFAULT NULL,
+  `hook_id` varchar(128) DEFAULT NULL,
+  `tag` varchar(128) DEFAULT NULL,
+  `client_request` varchar(4096) DEFAULT NULL,
+  `server_request` varchar(4096) DEFAULT NULL,
+  `server_response` varchar(4096) DEFAULT NULL,
+  `client_response` varchar(4096) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;

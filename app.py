@@ -23,12 +23,13 @@ def post_header():
     # Insert into table
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute('''INSERT INTO header_info (hook_id, timestamps, tag, sequence,
+    cursor.execute('''INSERT INTO header_info (state_machine_id, hook_id, timestamps, tag, sequence,
                       client_request, server_request, server_response, client_response)
-                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (hdr_info.hook_id, hdr_info.timestamps, hdr_info.tag,
-                                                                   hdr_info.sequence, hdr_info.client_request,
-                                                                   hdr_info.server_request, hdr_info.server_response,
-                                                                   hdr_info.client_response))
+                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', (hdr_info.state_machine_id, hdr_info.hook_id,
+                                                                       hdr_info.timestamps, hdr_info.tag,
+                                                                       hdr_info.sequence, hdr_info.client_request,
+                                                                       hdr_info.server_request, hdr_info.server_response,
+                                                                       hdr_info.client_response))
     conn.commit()
     return "Done"
 

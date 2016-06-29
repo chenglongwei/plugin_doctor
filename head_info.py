@@ -10,7 +10,7 @@ class HeaderInfo(object):
     Functions: Wrapped header information.
     '''
 
-    def __init__(self, js=None, hook_id=None, timestamps=None, tag=None, sequence=None,
+    def __init__(self, js=None, state_machine_id=None, hook_id=None, timestamps=None, tag=None, sequence=None,
                  client_request=None, server_request=None, server_response=None, client_response=None):
         if js is not None:
             # If strict is False (True is the default), the control characters ('\t', '\n', '\r', '\0')
@@ -18,6 +18,7 @@ class HeaderInfo(object):
             self.__dict__ = json.loads(js, strict=False)
             return
 
+        self.state_machine_id = state_machine_id
         self.hook_id = hook_id
         self.timestamps = timestamps
         self.tag = tag
