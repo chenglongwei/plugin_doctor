@@ -3,7 +3,7 @@ import json
 
 class HeaderInfo(object):
     '''
-    File name: HeaderInfo.py
+    File name: head_info.py
     Author: Chenglong Wei, chwei@linkedin.com, weichenglong@gmail.com
     Date created: 6/28/2016
     Python Version: 2.6.6
@@ -32,3 +32,7 @@ class HeaderInfo(object):
 
 header_info1 = HeaderInfo(hook_id="TS_HTTP_SEND_RESPONSE_HDR_HOOK")
 print (header_info1.to_json())
+print header_info1.to_json()
+
+header_info2 = HeaderInfo(js='{"hook_id" : "TS_HTTP_SEND_RESPONSE_HDR_HOOK", "timestamps": 123456}')
+print (header_info2.to_json())

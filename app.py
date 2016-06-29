@@ -1,6 +1,6 @@
 from flask import Flask, request
 from flaskext.mysql import MySQL
-import HeaderInfo
+from head_info import HeaderInfo
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -16,9 +16,9 @@ mysql.init_app(app)
 
 @app.route('/post_header', methods=['POST'])
 def post_header():
-    # Get the request json
-    hdr_json = request.json
-    hdr_info = HeaderInfo.HeaderInfo(js=hdr_json)
+    # Get the request data
+    hdr_json = request.data
+    hdr_info = HeaderInfo(js=hdr_json)
 
     # Insert into table
     conn = mysql.connect()
