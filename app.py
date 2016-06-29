@@ -17,7 +17,7 @@ mysql.init_app(app)
 @app.route('/post_header', methods=['POST'])
 def post_header():
     # Get the request data
-    hdr_json = request.data
+    hdr_json = request.get_data()
     hdr_info = HeaderInfo(js=hdr_json)
 
     # Insert into table
@@ -25,10 +25,10 @@ def post_header():
     cursor = conn.cursor()
     cursor.execute('''INSERT INTO header_info (hook_id, timestamps, tag, sequence,
                       client_request, server_request, server_response, client_response)
-                      VALUE (%s, %s, %s, %s, %s, %s, %s, %s)''', (hdr_info.hook_id, hdr_info.timestamps, hdr_info.tag,
-                                                                  hdr_info.sequence, hdr_info.client_request,
-                                                                  hdr_info.server_request, hdr_info.server_response,
-                                                                  hdr_info.client_response))
+                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s)''', (hdr_info.hook_id, hdr_info.timestamps, hdr_info.tag,
+                                                                   hdr_info.sequence, hdr_info.client_request,
+                                                                   hdr_info.server_request, hdr_info.server_response,
+                                                                   hdr_info.client_response))
     conn.commit()
     return "Done"
 
