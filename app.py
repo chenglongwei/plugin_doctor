@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flaskext.mysql import MySQL
 from head_info import HeaderInfo
 
@@ -33,6 +33,33 @@ def post_header():
     conn.commit()
     return "Done"
 
+
+@app.route('/', methods=['GET'])
+def get_header_list():
+    conn = mysql.connect()
+    cursor = conn.cursor()
+    cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
+                      client_request, server_request, server_response, client_response FROM header_info''')
+
+    header_list = cursor.fetchall()
+
+    header_dict_list = []
+    for header in header_list:
+        header_dict = {
+            'id': header[0],
+            'state_machine_id': header[1],
+            'hook_id': header[2],
+            'timestamps': header[3],
+            'tag': header[4],
+            'sequence': header[5],
+            'client_request': header[6],
+            'server_request': header[7],
+            'server_response': header[8],
+            'client_response': header[9]
+        }
+        header_dict_list.append(header_dict)
+
+    return render_template('header_list.html', header_dict_list=header_dict_list)
 
 if __name__ == "__main__":
     app.run(port=9000)

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <thead>
+            <td> id </td>
+            <td> state_machine_id </td>
+            <td> hook_id </td>
+            <td> timestamps </td>
+            <td> tag </td>
+            <td> sequence </td>
+            <td> client_request </td>
+            <td> server_request </td>
+            <td> server_response </td>
+            <td> client_response </td>
+        </thead>
+
+        {% for head_info in header_dict_list %}
+        <tr>
+            <td> {{head_info["id"]}} </td>
+            <td> {{head_info["state_machine_id"]}} </td>
+            <td> {{head_info["hook_id"]}} </td>
+            <td> {{head_info["timestamps"]}} </td>
+            <td> {{head_info["tag"]}} </td>
+            <td> {{head_info["sequence"]}} </td>
+            <td> {{head_info["client_request"]}} </td>
+            <td> {{head_info["server_request"]}} </td>
+            <td> {{head_info["server_response"]}} </td>
+            <td> {{head_info["client_response"]}} </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
