@@ -1,38 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Plugin Monitor & Debug</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
-<body>
-    <table>
-        <thead>
-            <td> id </td>
-            <td> state_machine_id </td>
-            <td> hook_id </td>
-            <td> timestamps </td>
-            <td> tag </td>
-            <td> sequence </td>
-            <td> client_request </td>
-            <td> server_request </td>
-            <td> server_response </td>
-            <td> client_response </td>
-        </thead>
 
-        {% for head_info in header_dict_list %}
-        <tr>
-            <td> {{head_info["id"]}} </td>
-            <td> {{head_info["state_machine_id"]}} </td>
-            <td> {{head_info["hook_id"]}} </td>
-            <td> {{head_info["timestamps"]}} </td>
-            <td> {{head_info["tag"]}} </td>
-            <td> {{head_info["sequence"]}} </td>
-            <td> {{head_info["client_request"]}} </td>
-            <td> {{head_info["server_request"]}} </td>
-            <td> {{head_info["server_response"]}} </td>
-            <td> {{head_info["client_response"]}} </td>
-        </tr>
-        {% endfor %}
-    </table>
+<body>
+    {% include 'nav_top.html' %}
+    <div class="container">
+
+    <div class="jumbotron text-center">
+        <h2>Plugin MD</h2>
+        <p>An Traffic Server Plugin Monitor and Debug Tool</p>
+    </div>
+
+    {% for head_info in header_dict_list %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-2">
+                    <b>Request ID</b>: {{head_info.state_machine_id}}
+                </div>
+                <div class="col-sm-4">
+                    <b>Hook ID</b>: {{head_info.hook_id}}
+                </div>
+                <div class="col-sm-2">
+                    <b>Sequence</b>: {{head_info.sequence}}
+                </div>
+                <div class="col-sm-2">
+                    <b>Time</b>: {{head_info.timestamps}}
+                </div>
+                <div class="col-sm-2">
+                    <b>Tag</b>: {{head_info.tag}} <br>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <b>Client Request</b><br>
+                    {{head_info.client_request}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <b>Server Request</b><br>
+                    {{head_info.server_request}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                   <b>Server Response</b><br>
+                    {{head_info.server_response}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <b>Client Response</b><br>
+                    {{head_info.client_response}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endfor %}
+
+    </div>
 </body>
 </html>
