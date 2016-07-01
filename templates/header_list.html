@@ -15,7 +15,7 @@
 
     <div class="jumbotron text-center">
         <h2>Plugin MD</h2>
-        <p>An Traffic Server Plugin Monitor and Debug Tool</p>
+        <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
 
     {% for head_info in header_dict_list %}
@@ -44,25 +44,33 @@
             <div class="row">
                 <div class="col-sm-12">
                     <b>Client Request</b><br>
-                    {{head_info.client_request}}
+                    {% for line in head_info.client_request %}
+                        {{line}} <br>
+                    {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <b>Server Request</b><br>
-                    {{head_info.server_request}}
+                    {% for line in head_info.server_request %}
+                        {{line}} <br>
+                    {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                    <b>Server Response</b><br>
-                    {{head_info.server_response}}
+                    {% for line in head_info.server_response %}
+                        {{line}} <br>
+                    {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <b>Client Response</b><br>
-                    {{head_info.client_response}}
+                    {% for line in head_info.client_response %}
+                        {{line}} <br>
+                    {% endfor %}
                 </div>
             </div>
         </div>

@@ -45,6 +45,10 @@ def get_header_list():
 
     header_dict_list = []
     for header in header_list:
+        client_request_list = header[6].splitlines()
+        server_request_list = header[7].splitlines()
+        server_response_list = header[8].splitlines()
+        client_response_list = header[9].splitlines()
         header_dict = {
             'id': header[0],
             'state_machine_id': header[1],
@@ -52,10 +56,10 @@ def get_header_list():
             'timestamps': header[3],
             'tag': header[4],
             'sequence': header[5],
-            'client_request': header[6],
-            'server_request': header[7],
-            'server_response': header[8],
-            'client_response': header[9]
+            'client_request': client_request_list,
+            'server_request': server_request_list,
+            'server_response': server_response_list,
+            'client_response': client_response_list
         }
         header_dict_list.append(header_dict)
 
