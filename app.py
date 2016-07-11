@@ -2,6 +2,7 @@ from flask import Flask, request, render_template
 from flaskext.mysql import MySQL
 from head_info import HeaderInfo
 import datetime
+import difflib
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -45,7 +46,16 @@ def get_header_list():
 
     header_list = cursor.fetchall()
 
+    return render_template('header_list.html', header_dict_list=generate_header_dict_list(header_list=header_list))
+
+
+def generate_header_dict_list(header_list):
     header_dict_list = []
+    client_request_list_pre = ''
+    server_request_list_pre = ''
+    server_response_list_pre = ''
+    client_response_list_pre = ''
+
     for header in header_list:
         client_request_list = header[6].splitlines()
         server_request_list = header[7].splitlines()
@@ -61,11 +71,23 @@ def get_header_list():
             'client_request': client_request_list,
             'server_request': server_request_list,
             'server_response': server_response_list,
-            'client_response': client_response_list
+            'client_response': client_response_list,
+            'client_request_diff': difflib.unified_diff(client_request_list_pre, client_request_list, lineterm=''),
+            'server_request_diff': difflib.unified_diff(server_request_list_pre, server_request_list, lineterm=''),
+            'server_response_diff': difflib.unified_diff(server_response_list_pre, server_response_list, lineterm=''),
+            'client_response_diff': difflib.unified_diff(client_response_list_pre, client_response_list, lineterm='')
         }
+
+        # Get a dict, append to the dict list
         header_dict_list.append(header_dict)
 
-    return render_template('header_list.html', header_dict_list=header_dict_list)
+        # Remember the pre header info, used for diff
+        client_request_list_pre = client_request_list
+        server_request_list_pre = server_request_list
+        server_response_list_pre = server_response_list
+        client_response_list_pre = client_response_list
+
+    return header_dict_list
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=9000)

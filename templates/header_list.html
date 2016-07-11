@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link href="/static/css/header_list.css" rel="stylesheet" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </head>
@@ -19,7 +20,7 @@
     </div>
 
     {% for head_info in header_dict_list %}
-    <div class="panel panel-default">
+    <div class="panel panel-primary">
         <div class="panel-heading">
             <div class="row">
                 <div class="col-sm-2">
@@ -48,32 +49,64 @@
             <div class="row">
                 <div class="col-sm-12">
                     <b>Client Request</b><br>
-                    {% for line in head_info.client_request %}
-                        {{line}} <br>
+                    {% for line in head_info.client_request_diff %}
+                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                            <p style="background-color: #F6F6F6">{{line}}</p>
+                        {% elif line.startswith('+') %}
+                            <p class="bg-success">{{line}}</p>
+                        {% elif line.startswith('-') %}
+                            <p class="bg-danger">{{line}}</p>
+                        {% else %}
+                            <p class="text-muted">{{line}}</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <b>Server Request</b><br>
-                    {% for line in head_info.server_request %}
-                        {{line}} <br>
+                    {% for line in head_info.server_request_diff %}
+                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                            <p style="background-color: #F6F6F6">{{line}}</p>
+                        {% elif line.startswith('+') %}
+                            <p class="bg-success">{{line}}</p>
+                        {% elif line.startswith('-') %}
+                            <p class="bg-danger">{{line}}</p>
+                        {% else %}
+                            <p class="text-muted">{{line}}</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                    <b>Server Response</b><br>
-                    {% for line in head_info.server_response %}
-                        {{line}} <br>
+                    {% for line in head_info.server_response_diff %}
+                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                            <p style="background-color: #F6F6F6">{{line}}</p>
+                        {% elif line.startswith('+') %}
+                            <p class="bg-success">{{line}}</p>
+                        {% elif line.startswith('-') %}
+                            <p class="bg-danger">{{line}}</p>
+                        {% else %}
+                            <p class="text-muted">{{line}}</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
             <div class="row">
                 <div class="col-sm-12">
                     <b>Client Response</b><br>
-                    {% for line in head_info.client_response %}
-                        {{line}} <br>
+                    {% for line in head_info.client_response_diff %}
+                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                            <p style="background-color: #F6F6F6">{{line}}</p>
+                        {% elif line.startswith('+') %}
+                            <p class="bg-success">{{line}}</p>
+                        {% elif line.startswith('-') %}
+                            <p class="bg-danger">{{line}}</p>
+                        {% else %}
+                            <p class="text-muted">{{line}}</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
