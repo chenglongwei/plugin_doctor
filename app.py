@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 from flaskext.mysql import MySQL
 from head_info import HeaderInfo
+import datetime
 
 mysql = MySQL()
 app = Flask(__name__)
@@ -39,7 +40,8 @@ def get_header_list():
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
-                      client_request, server_request, server_response, client_response FROM header_info''')
+                      client_request, server_request, server_response, client_response FROM header_info
+                      ORDER BY state_machine_id DESC, sequence ASC ''')
 
     header_list = cursor.fetchall()
 
@@ -53,7 +55,7 @@ def get_header_list():
             'id': header[0],
             'state_machine_id': header[1],
             'hook_id': header[2],
-            'timestamps': header[3],
+            'time': datetime.datetime.fromtimestamp(header[3]),
             'tag': header[4],
             'sequence': header[5],
             'client_request': client_request_list,
@@ -66,4 +68,4 @@ def get_header_list():
     return render_template('header_list.html', header_dict_list=header_dict_list)
 
 if __name__ == "__main__":
-    app.run(port=9000)
+    app.run(host='0.0.0.0', port=9000)
