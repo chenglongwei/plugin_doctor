@@ -15,7 +15,7 @@
     <div class="container">
 
     <div class="jumbotron text-center">
-        <h2>Plugin MD</h2>
+        <h1>Plugin MD</h1>
         <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
 
@@ -47,6 +47,10 @@
         {% set outer_loop = loop %}
         <div class="panel-body">
             {% for header_diff in head_info.header_diff_list %}
+            {# add a divider line to separate different request. #}
+            {% if not loop.first %}
+            <hr class="divider">
+            {% endif %}
             <div class="row">
                 <div class="col-sm-12">
                     <div class="row">
