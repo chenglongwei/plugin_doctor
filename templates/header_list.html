@@ -44,77 +44,65 @@
 
             </div>
         </div>
-
+        {% set outer_loop = loop %}
         <div class="panel-body">
+            {% for header_diff in head_info.header_diff_list %}
             <div class="row">
                 <div class="col-sm-12">
-                    <b>Client Request</b><br>
-                    {% for line in head_info.client_request_diff %}
-                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
-                            <p style="background-color: #F6F6F6">{{line}}</p>
-                        {% elif line.startswith('+') %}
-                            <p class="bg-success">{{line}}</p>
-                        {% elif line.startswith('-') %}
-                            <p class="bg-danger">{{line}}</p>
-                        {% else %}
-                            <p class="text-muted">{{line}}</p>
-                        {% endif %}
-                    {% endfor %}
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <b>{{header_diff.name}}</b>
+                            <!-- Trigger the modal with a button -->
+                            <button type="button" class="btn btn-default pull-right" data-toggle="modal"
+                                data-target={{ "#hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }}>View</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            {% for line in header_diff.hdr_diff %}
+                                {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                                    <p style="background-color: #F6F6F6">{{line}}</p>
+                                {% elif line.startswith('+') %}
+                                    <p class="bg-success">{{line}}</p>
+                                {% elif line.startswith('-') %}
+                                    <p class="bg-danger">{{line}}</p>
+                                {% else %}
+                                    <p class="text-muted">{{line}}</p>
+                                {% endif %}
+                            {# iterator lines in the header #}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id={{ "hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }} role="dialog">
+                        <p>{{ loop.index0 }}</p>
+                        <div class="modal-dialog">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">{{head_info.header_list[loop.index0].name}}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    {% for line in head_info.header_list[loop.index0].hdr_info %}
+                                        <p>{{line}}</p>
+                                    {% endfor %}
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <b>Server Request</b><br>
-                    {% for line in head_info.server_request_diff %}
-                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
-                            <p style="background-color: #F6F6F6">{{line}}</p>
-                        {% elif line.startswith('+') %}
-                            <p class="bg-success">{{line}}</p>
-                        {% elif line.startswith('-') %}
-                            <p class="bg-danger">{{line}}</p>
-                        {% else %}
-                            <p class="text-muted">{{line}}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                   <b>Server Response</b><br>
-                    {% for line in head_info.server_response_diff %}
-                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
-                            <p style="background-color: #F6F6F6">{{line}}</p>
-                        {% elif line.startswith('+') %}
-                            <p class="bg-success">{{line}}</p>
-                        {% elif line.startswith('-') %}
-                            <p class="bg-danger">{{line}}</p>
-                        {% else %}
-                            <p class="text-muted">{{line}}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <b>Client Response</b><br>
-                    {% for line in head_info.client_response_diff %}
-                        {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
-                            <p style="background-color: #F6F6F6">{{line}}</p>
-                        {% elif line.startswith('+') %}
-                            <p class="bg-success">{{line}}</p>
-                        {% elif line.startswith('-') %}
-                            <p class="bg-danger">{{line}}</p>
-                        {% else %}
-                            <p class="text-muted">{{line}}</p>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
+            {# iterator header diff list: client request, server request, server response, client response #}
+            {% endfor %}
         </div>
     </div>
-
+    {# iterator of header_dict_list #}
     {% endfor %}
-
     </div>
 </body>
 </html>

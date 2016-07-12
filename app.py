@@ -50,17 +50,19 @@ def get_header_list():
 
 
 def generate_header_dict_list(header_list):
+    # return a dict list of every item.
     header_dict_list = []
-    client_request_list_pre = ''
-    server_request_list_pre = ''
-    server_response_list_pre = ''
-    client_response_list_pre = ''
+
+    client_request_hdr_pre = []
+    server_request_hdr_pre = []
+    server_response_hdr_pre = []
+    client_response_hdr_pre = []
 
     for header in header_list:
-        client_request_list = header[6].splitlines()
-        server_request_list = header[7].splitlines()
-        server_response_list = header[8].splitlines()
-        client_response_list = header[9].splitlines()
+        client_request_hdr = header[6].splitlines()
+        server_request_hdr = header[7].splitlines()
+        server_response_hdr = header[8].splitlines()
+        client_response_hdr = header[9].splitlines()
         header_dict = {
             'id': header[0],
             'state_machine_id': header[1],
@@ -68,24 +70,30 @@ def generate_header_dict_list(header_list):
             'time': datetime.datetime.fromtimestamp(header[3]),
             'tag': header[4],
             'sequence': header[5],
-            'client_request': client_request_list,
-            'server_request': server_request_list,
-            'server_response': server_response_list,
-            'client_response': client_response_list,
-            'client_request_diff': difflib.unified_diff(client_request_list_pre, client_request_list, lineterm=''),
-            'server_request_diff': difflib.unified_diff(server_request_list_pre, server_request_list, lineterm=''),
-            'server_response_diff': difflib.unified_diff(server_response_list_pre, server_response_list, lineterm=''),
-            'client_response_diff': difflib.unified_diff(client_response_list_pre, client_response_list, lineterm='')
+            'header_list': [{'name': 'Client Request', 'hdr_info': client_request_hdr},
+                            {'name': 'Server Request', 'hdr_info': server_request_hdr},
+                            {'name': 'Server Response', 'hdr_info': server_response_hdr},
+                            {'name': 'Client Response', 'hdr_info': client_response_hdr}],
+            'header_diff_list': [
+                            {'name': 'Client Request',
+                             'hdr_diff': difflib.unified_diff(client_request_hdr_pre, client_request_hdr, lineterm='')},
+                            {'name': 'Server Request',
+                             'hdr_diff': difflib.unified_diff(server_request_hdr_pre, server_request_hdr, lineterm='')},
+                            {'name': 'Server Response',
+                             'hdr_diff': difflib.unified_diff(server_response_hdr_pre, server_response_hdr, lineterm='')},
+                            {'name': 'Client Response',
+                             'hdr_diff': difflib.unified_diff(client_response_hdr_pre, client_response_hdr, lineterm='')}],
+
         }
 
         # Get a dict, append to the dict list
         header_dict_list.append(header_dict)
 
         # Remember the pre header info, used for diff
-        client_request_list_pre = client_request_list
-        server_request_list_pre = server_request_list
-        server_response_list_pre = server_response_list
-        client_response_list_pre = client_response_list
+        client_request_hdr_pre = client_request_hdr
+        server_request_hdr_pre = server_request_hdr
+        server_response_hdr_pre = server_response_hdr
+        client_response_hdr_pre = client_response_hdr
 
     return header_dict_list
 

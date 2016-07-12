@@ -2,3 +2,14 @@ p {
     padding: 4px;
     margin: 0;
 }
+
+.modal-header, h4, .close {
+    background-color: #0077B5;
+    color:white !important;
+    text-align: center;
+    font-size: 30px;
+}
+
+.modal-footer {
+    background-color: #f9f9f9;
+}
