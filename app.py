@@ -41,7 +41,9 @@ def get_header_list():
     conn = mysql.connect()
     cursor = conn.cursor()
     cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
-                      client_request, server_request, server_response, client_response FROM header_info
+                      client_request, server_request, server_response, client_response
+                      FROM header_info
+                      WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)
                       ORDER BY state_machine_id DESC, sequence ASC ''')
 
     header_list = cursor.fetchall()
@@ -52,50 +54,76 @@ def get_header_list():
 def generate_header_dict_list(header_list):
     # return a dict list of every item.
     header_dict_list = []
+    # remember the previous header dict, to generate diff
+    pre_header_dict = {}
 
+    for header in header_list:
+
+        header_dict = dict()
+
+        header_dict['id'] = header[0]
+        header_dict['state_machine_id'] = header[1]
+        header_dict['hook_id'] = header[2]
+        header_dict['time'] = datetime.datetime.fromtimestamp(header[3])
+        header_dict['tag'] = header[4]
+        header_dict['sequence'] = header[5]
+
+        # header list
+        client_request_hdr = header[6].splitlines()
+        server_request_hdr = header[7].splitlines()
+        server_response_hdr = header[8].splitlines()
+        client_response_hdr = header[9].splitlines()
+        header_dict['header_list'] = [{'name': 'Client Request', 'hdr_info': client_request_hdr},
+                                      {'name': 'Server Request', 'hdr_info': server_request_hdr},
+                                      {'name': 'Server Response', 'hdr_info': server_response_hdr},
+                                      {'name': 'Client Response', 'hdr_info': client_response_hdr}]
+        # header diff list
+        header_dict['header_diff_list'] = generate_header_diff_list(pre_header_dict, header_dict)
+
+        # Got a dict, append to the dict list
+        header_dict_list.append(header_dict)
+
+        # Remember the pre header info, used for diff
+        pre_header_dict = header_dict
+
+    return header_dict_list
+
+
+def generate_header_diff_list(pre_header_dict, header_dict):
+    # return result list
+    header_diff_list = []
+
+    # diff origin data
     client_request_hdr_pre = []
     server_request_hdr_pre = []
     server_response_hdr_pre = []
     client_response_hdr_pre = []
 
-    for header in header_list:
-        client_request_hdr = header[6].splitlines()
-        server_request_hdr = header[7].splitlines()
-        server_response_hdr = header[8].splitlines()
-        client_response_hdr = header[9].splitlines()
-        header_dict = {
-            'id': header[0],
-            'state_machine_id': header[1],
-            'hook_id': header[2],
-            'time': datetime.datetime.fromtimestamp(header[3]),
-            'tag': header[4],
-            'sequence': header[5],
-            'header_list': [{'name': 'Client Request', 'hdr_info': client_request_hdr},
-                            {'name': 'Server Request', 'hdr_info': server_request_hdr},
-                            {'name': 'Server Response', 'hdr_info': server_response_hdr},
-                            {'name': 'Client Response', 'hdr_info': client_response_hdr}],
-            'header_diff_list': [
-                            {'name': 'Client Request',
-                             'hdr_diff': difflib.unified_diff(client_request_hdr_pre, client_request_hdr, lineterm='')},
-                            {'name': 'Server Request',
-                             'hdr_diff': difflib.unified_diff(server_request_hdr_pre, server_request_hdr, lineterm='')},
-                            {'name': 'Server Response',
-                             'hdr_diff': difflib.unified_diff(server_response_hdr_pre, server_response_hdr, lineterm='')},
-                            {'name': 'Client Response',
-                             'hdr_diff': difflib.unified_diff(client_response_hdr_pre, client_response_hdr, lineterm='')}],
+    # based on pre_header_dict, init origin data
+    if pre_header_dict and pre_header_dict['state_machine_id'] == header_dict['state_machine_id']:
+        client_request_hdr_pre = pre_header_dict['header_list'][0]['hdr_info']
+        server_request_hdr_pre = pre_header_dict['header_list'][1]['hdr_info']
+        server_response_hdr_pre = pre_header_dict['header_list'][2]['hdr_info']
+        client_response_hdr_pre = pre_header_dict['header_list'][3]['hdr_info']
 
-        }
+    # header_dict could not be null, get the new data
+    client_request_hdr = header_dict['header_list'][0]['hdr_info']
+    server_request_hdr = header_dict['header_list'][1]['hdr_info']
+    server_response_hdr = header_dict['header_list'][2]['hdr_info']
+    client_response_hdr = header_dict['header_list'][3]['hdr_info']
 
-        # Get a dict, append to the dict list
-        header_dict_list.append(header_dict)
+    # generate diff list
+    header_diff_list.append({'name': 'Client Request',
+                             'hdr_diff': difflib.unified_diff(client_request_hdr_pre, client_request_hdr, lineterm='')})
+    header_diff_list.append({'name': 'Server Request',
+                             'hdr_diff': difflib.unified_diff(server_request_hdr_pre, server_request_hdr, lineterm='')})
+    header_diff_list.append({'name': 'Server Response',
+                             'hdr_diff': difflib.unified_diff(server_response_hdr_pre, server_response_hdr, lineterm='')})
+    header_diff_list.append({'name': 'Client Response',
+                             'hdr_diff': difflib.unified_diff(client_response_hdr_pre, client_response_hdr, lineterm='')})
 
-        # Remember the pre header info, used for diff
-        client_request_hdr_pre = client_request_hdr
-        server_request_hdr_pre = server_request_hdr
-        server_response_hdr_pre = server_response_hdr
-        client_response_hdr_pre = client_response_hdr
+    return header_diff_list
 
-    return header_dict_list
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=9000)
