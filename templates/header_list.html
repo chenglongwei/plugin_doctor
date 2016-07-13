@@ -19,6 +19,34 @@
         <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
 
+    <div class="row" align="right">
+        <div class="col-sm-12">
+            <div class="btn-group">
+                <div class="btn-group">
+                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Hook ID
+                    <span class="glyphicon glyphicon-filter"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/?hook_id=ALL">ALL</a></li>
+                        <li><a href="/?hook_id=TS_HTTP_READ_REQUEST_HDR_HOOK">TS_HTTP_READ_REQUEST_HDR_HOOK</a></li>
+                        <li><a href="/?hook_id=TS_HTTP_PRE_REMAP_HOOK">TS_HTTP_PRE_REMAP_HOOK</a></li>
+                        <li><a href="/?hook_id=TS_HTTP_SEND_REQUEST_HDR_HOOK">TS_HTTP_SEND_REQUEST_HDR_HOOK</a></li>
+                        <li><a href="/?hook_id=TS_HTTP_READ_RESPONSE_HDR_HOOK">TS_HTTP_READ_RESPONSE_HDR_HOOK</a></li>
+                        <li><a href="/?hook_id=TS_HTTP_SEND_RESPONSE_HDR_HOOK">TS_HTTP_SEND_RESPONSE_HDR_HOOK</a></li>
+                    </ul>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Tag
+                    <span class="glyphicon glyphicon-filter"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a href="/?tag=Before plugin">Before plugin</a></li>
+                        <li><a href="/?tag=After plugin">After plugin</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {% for head_info in header_dict_list %}
     <div class="panel panel-primary">
         <div class="panel-heading">

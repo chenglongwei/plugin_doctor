@@ -22,3 +22,12 @@ p {
     background-size: cover;
     overflow: hidden;
 }
+
+.btn-group {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.btn {
+    margin: 5px;
+}
