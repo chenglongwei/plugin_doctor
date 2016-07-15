@@ -49,6 +49,8 @@
         </div>
     </div>
 
+    <hr class="divider">
+
     {# Hook Id settings #}
     <div class="panel panel-primary">
         <div class="panel-heading">Http Request Settings</div>
@@ -69,18 +71,20 @@
 
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Request URL</span>
-                <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server URL"
+                <input id="ts_request_url" type="text" class="form-control" placeholder="Traffic Server URL"
                        value="http://localhost:8000/">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-info">Go</button>
+                    <button type="button" class="btn btn-info" onclick=ts_http_request();>Go</button>
                 </div>
             </div><!-- /input-group -->
         </div>
     </div>
 
+    <hr class="divider">
+
     {# show the traffic server return url #}
     <div class="panel panel-primary">
-        <div class="panel-heading">Traffic Server Results</div>
+        <div class="panel-heading">Request Result</div>
         <div class="panel-body">
             <iframe id="debugOptionFrame" class="col-sm-12" src="about:blank" frameborder="0" height="300">
             </iframe>
