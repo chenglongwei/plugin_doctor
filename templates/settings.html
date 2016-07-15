@@ -4,11 +4,19 @@
     <title>Plugin Monitor & Debug</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" >
+    <!-- Local CSS and JS: -->
     <link href="/static/css/jumbotron.css" rel="stylesheet" >
     <link href="/static/css/settings.css" rel="stylesheet" >
+    <script src="/static/js/settings.js"></script>
+
+    <!-- Bootstrap and Jquery CSS and JS: -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" >
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Include multiselect plugin's CSS and JS: -->
+    <script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css"/>
 </head>
 
 <body>
@@ -19,12 +27,13 @@
         <h1>Plugin MD</h1>
         <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
-
+    {# debug on/off settings #}
     <div class="panel panel-primary">
-        <div class="panel-heading">Set Debug Option (On/Off)</div>
+        <div class="panel-heading">Debug Option Settings </div>
         <div class="panel-body">
             <div class="input-group">
-                <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server address and port number"
+                <span class="input-group-addon" id="basic-addon1">Traffic Server</span>
+                <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server URL"
                        value="http://localhost:8000/">
                 <div class="input-group-btn">
                     <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
@@ -40,23 +49,48 @@
         </div>
     </div>
 
-    <iframe id="debugOptionFrame" class="col-sm-12" src="about:blank">
+    {# Hook Id settings #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">Http Request Settings</div>
+        <div class="panel-body">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Set Hook Ids</span>
+                <select title="Choose Hook Ids" id="hook_id" multiple="multiple">
+                    <option>ALL_HOOKs</option>
+                    <option>TS_HTTP_READ_REQUEST_HDR_HOOK</option>
+                    <option>TS_HTTP_PRE_REMAP_HOOK</option>
+                    <option>TS_HTTP_SEND_REQUEST_HDR_HOOK</option>
+                    <option>TS_HTTP_READ_RESPONSE_HDR_HOOK</option>
+                    <option>TS_HTTP_SEND_RESPONSE_HDR_HOOK</option>
+                </select>
+            </div><!-- /input-group -->
 
-    </iframe>
+            <hr class="divider">
+
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Request URL</span>
+                <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server URL"
+                       value="http://localhost:8000/">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-info">Go</button>
+                </div>
+            </div><!-- /input-group -->
+        </div>
+    </div>
+
+    {# show the traffic server return url #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">Traffic Server Results</div>
+        <div class="panel-body">
+            <iframe id="debugOptionFrame" class="col-sm-12" src="about:blank" frameborder="0" height="300">
+            </iframe>
+        </div>
+    </div>
 
     {# end container #}
     </div>
-
     <script>
-        function ts_debug_on() {
-            var ts_url = document.getElementById('ts_address').value;
-            document.getElementById("debugOptionFrame").src = ts_url + "?debug=on";
-        }
-
-        function ts_debug_off() {
-            var ts_url = document.getElementById('ts_address').value;
-            document.getElementById("debugOptionFrame").src = ts_url + "?debug=off";
-        }
+        $('#hook_id').multiselect();
     </script>
 </body>
 </html>
