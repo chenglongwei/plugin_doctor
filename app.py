@@ -48,6 +48,11 @@ def get_header_list():
     return render_template('header_list.html', header_dict_list=generate_header_dict_list(header_list=header_list))
 
 
+@app.route('/settings', methods=['GET'])
+def debug_setting():
+    return render_template('settings.html')
+
+
 def execute_sql_based_on_query(hook_id, tag, cursor):
     if hook_id != 'ALL':
         cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,

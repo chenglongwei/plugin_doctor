@@ -1,0 +1,8 @@
+.jumbotron {
+    position: relative;
+    background: #fff url("/static/images/diagnose.jpg") center center;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    overflow: hidden;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Plugin Monitor & Debug</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" >
+    <link href="/static/css/jumbotron.css" rel="stylesheet" >
+    <link href="/static/css/settings.css" rel="stylesheet" >
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    {% include 'nav_top.html' %}
+    <div class="container">
+
+    <div class="jumbotron text-center">
+        <h1>Plugin MD</h1>
+        <p>A Traffic Server Plugin Monitor and Debug Tool</p>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Set Debug Option (On/Off)</div>
+        <div class="panel-body">
+            <div class="input-group">
+                <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server address and port number"
+                       value="http://localhost:8000/">
+                <div class="input-group-btn">
+                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"> Choose Debug Option <span class="caret"></span>
+                    </button>
+                    <ul id="debug_option" class="dropdown-menu dropdown-menu-right">
+                        <li><a href="#" onclick=ts_debug_on();>Debug on</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="#" onclick=ts_debug_off();>Debug off</a></li>
+                    </ul>
+                </div><!-- /btn-group -->
+            </div><!-- /input-group -->
+        </div>
+    </div>
+
+    <iframe id="debugOptionFrame" class="col-sm-12" src="about:blank">
+
+    </iframe>
+
+    {# end container #}
+    </div>
+
+    <script>
+        function ts_debug_on() {
+            var ts_url = document.getElementById('ts_address').value;
+            document.getElementById("debugOptionFrame").src = ts_url + "?debug=on";
+        }
+
+        function ts_debug_off() {
+            var ts_url = document.getElementById('ts_address').value;
+            document.getElementById("debugOptionFrame").src = ts_url + "?debug=off";
+        }
+    </script>
+</body>
+</html>
