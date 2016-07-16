@@ -34,10 +34,10 @@
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Traffic Server</span>
                 <input id="ts_address" type="text" class="form-control" placeholder="Traffic Server URL"
-                       value="http://localhost:8000/">
+                       value="http://chwei-ld1:8000/">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false"> Choose Debug Option <span class="caret"></span>
+                    <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false"> Debug Option <span class="caret"></span>
                     </button>
                     <ul id="debug_option" class="dropdown-menu dropdown-menu-right">
                         <li><a href="#" onclick=ts_debug_on();>Debug on</a></li>
@@ -72,15 +72,19 @@
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Request URL</span>
                 <input id="ts_request_url" type="text" class="form-control" placeholder="Traffic Server URL"
-                       value="http://localhost:8000/">
+                       value="http://chwei-ld1:8000/">
                 <div class="input-group-btn">
-                    <button type="button" class="btn btn-info" onclick=ts_http_request();>Go</button>
+                    <button type="button" class="btn btn-success" onclick=ts_http_request();>Visit Page</button>
                 </div>
             </div><!-- /input-group -->
         </div>
     </div>
 
     <hr class="divider">
+
+    <div style="text-align: right; width: 100%; padding-bottom: 14px; padding-right: 14px">
+        <a href="/" class="btn btn-success" >View Header</a>
+    </div>
 
     {# show the traffic server return url #}
     <div class="panel panel-primary">
