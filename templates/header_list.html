@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Plugin Monitor & Debug</title>
+    <title>Traffic Monitor & Debug</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" >
@@ -16,7 +16,7 @@
     <div class="container">
 
     <div class="jumbotron text-center">
-        <h1>Plugin MD</h1>
+        <h1>Traffic MD</h1>
         <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
 
@@ -49,7 +49,7 @@
     </div>
 
     {% for head_info in header_dict_list %}
-    <div class="panel panel-primary">
+    <div id = "{{ "panel-" ~ loop.index0 }}" class="panel panel-default" >
         <div class="panel-heading">
             <div class="row">
                 <div class="col-sm-2">
@@ -60,6 +60,10 @@
                 </div>
                 <div class="col-sm-4">
                     <b>Sequence</b>: {{head_info.sequence}}
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" class="btn btn-success" data-toggle="collapse"
+                            data-target={{ "#collapse-" ~ loop.index0 }}>Collapse</button>
                 </div>
             </div>
 
@@ -74,65 +78,75 @@
             </div>
         </div>
         {% set outer_loop = loop %}
-        <div class="panel-body">
-            {% for header_diff in head_info.header_diff_list %}
-            {# add a divider line to separate different request. #}
-            {% if not loop.first %}
-            <hr class="divider">
-            {% endif %}
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <b>{{header_diff.name}}</b>
-                            <!-- Trigger the modal with a button -->
-                            <button type="button" class="btn btn-success pull-right" data-toggle="modal"
-                                data-target={{ "#hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }}>View</button>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            {% for line in header_diff.hdr_diff %}
-                                {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
-                                    <p style="background-color: #F6F6F6">{{line}}</p>
-                                {% elif line.startswith('+') %}
-                                    <p class="bg-success">{{line}}</p>
-                                {% elif line.startswith('-') %}
-                                    <p class="bg-danger">{{line}}</p>
-                                {% else %}
-                                    <p class="text-muted">{{line}}</p>
-                                {% endif %}
-                            {# iterator lines in the header #}
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <!-- Modal -->
-                    <div class="modal fade" id={{ "hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }} role="dialog">
-                        <p>{{ loop.index0 }}</p>
-                        <div class="modal-dialog">
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">{{head_info.header_list[loop.index0].name}}</h4>
-                                </div>
-                                <div class="modal-body">
-                                    {% for line in head_info.header_list[loop.index0].hdr_info %}
-                                        <p>{{line}}</p>
-                                    {% endfor %}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                </div>
+        <div id = "{{ "collapse-" ~ loop.index0 }}" class="panel-collapse collapse" >
+            <script>
+                $('{{ '#collapse-' ~ loop.index0 }}').on('show.bs.collapse', function () {
+                    document.getElementById("{{ "panel-" ~ loop.index0 }}").setAttribute("class", "panel panel-primary")
+                });
+                $('{{ '#collapse-' ~ loop.index0 }}').on('hide.bs.collapse', function () {
+                    document.getElementById("{{ "panel-" ~ loop.index0 }}").setAttribute("class", "panel panel-default")
+                })
+            </script>
+            <div class="panel-body">
+                {% for header_diff in head_info.header_diff_list %}
+                {# add a divider line to separate different request. #}
+                {% if not loop.first %}
+                <hr class="divider">
+                {% endif %}
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <b>{{header_diff.name}}</b>
+                                <!-- Trigger the modal with a button -->
+                                <button type="button" class="btn btn-success pull-right" data-toggle="modal"
+                                    data-target={{ "#hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }}>View</button>
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                {% for line in header_diff.hdr_diff %}
+                                    {% if line.startswith('+++') or line.startswith('---') or line.startswith('@@') %}
+                                        <p style="background-color: #F6F6F6">{{line}}</p>
+                                    {% elif line.startswith('+') %}
+                                        <p class="bg-success">{{line}}</p>
+                                    {% elif line.startswith('-') %}
+                                        <p class="bg-danger">{{line}}</p>
+                                    {% else %}
+                                        <p class="text-muted">{{line}}</p>
+                                    {% endif %}
+                                {# iterator lines in the header #}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id={{ "hdrModal" ~ "-" ~ outer_loop.index0 ~ "-" ~ loop.index0 }} role="dialog">
+                            <p>{{ loop.index0 }}</p>
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">{{head_info.header_list[loop.index0].name}}</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% for line in head_info.header_list[loop.index0].hdr_info %}
+                                            <p>{{line}}</p>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            {# iterator header diff list: client request, server request, server response, client response #}
-            {% endfor %}
-        </div>
+                {# iterator header diff list: client request, server request, server response, client response #}
+                {% endfor %}
+            </div> <!-- panel-body -->
+        </div> <!-- panel-collapse -->
     </div>
     {# iterator of header_dict_list #}
     {% endfor %}
