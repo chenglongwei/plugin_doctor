@@ -25,13 +25,12 @@ def post_header():
     # Insert into table
     conn = mysql.connect()
     cursor = conn.cursor()
-    cursor.execute('''INSERT INTO header_info (state_machine_id, hook_id, timestamps, tag, sequence,
+    cursor.execute('''INSERT INTO header_info (state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
                       client_request, server_request, server_response, client_response)
-                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)''', (hdr_info.state_machine_id, hdr_info.hook_id,
-                                                                       hdr_info.timestamps, hdr_info.tag,
-                                                                       hdr_info.sequence, hdr_info.client_request,
-                                                                       hdr_info.server_request, hdr_info.server_response,
-                                                                       hdr_info.client_response))
+                      VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)''',
+                   (hdr_info.state_machine_id, hdr_info.hook_id, hdr_info.plugin_name,
+                    hdr_info.timestamps, hdr_info.tag, hdr_info.sequence, hdr_info.client_request,
+                    hdr_info.server_request, hdr_info.server_response, hdr_info.client_response))
     conn.commit()
     return "Done"
 
@@ -55,19 +54,19 @@ def debug_setting():
 
 def execute_sql_based_on_query(hook_id, tag, cursor):
     if hook_id != 'ALL':
-        cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
+        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
                           client_request, server_request, server_response, client_response
                           FROM header_info
                           WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND hook_id = %s
                           ORDER BY state_machine_id DESC, sequence ASC ''', hook_id)
     elif tag:
-        cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
+        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
                           client_request, server_request, server_response, client_response
                           FROM header_info
                           WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND tag = %s
                           ORDER BY state_machine_id DESC, sequence ASC ''', tag)
     else:
-        cursor.execute('''SELECT id, state_machine_id, hook_id, timestamps, tag, sequence,
+        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
                           client_request, server_request, server_response, client_response
                           FROM header_info
                           WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)
@@ -105,15 +104,16 @@ def generate_header_dict_list(header_list):
         header_dict['id'] = header[0]
         header_dict['state_machine_id'] = header[1]
         header_dict['hook_id'] = header[2]
-        header_dict['time'] = datetime.datetime.fromtimestamp(header[3])
-        header_dict['tag'] = header[4]
-        header_dict['sequence'] = header[5]
+        header_dict['plugin_name'] = header[3]
+        header_dict['time'] = datetime.datetime.fromtimestamp(header[4])
+        header_dict['tag'] = header[5]
+        header_dict['sequence'] = header[6]
 
         # header list
-        client_request_hdr = header[6].splitlines()
-        server_request_hdr = header[7].splitlines()
-        server_response_hdr = header[8].splitlines()
-        client_response_hdr = header[9].splitlines()
+        client_request_hdr = header[7].splitlines()
+        server_request_hdr = header[8].splitlines()
+        server_response_hdr = header[9].splitlines()
+        client_response_hdr = header[10].splitlines()
         header_dict['header_list'] = [{'name': 'Client Request', 'hdr_info': client_request_hdr},
                                       {'name': 'Server Request', 'hdr_info': server_request_hdr},
                                       {'name': 'Server Response', 'hdr_info': server_response_hdr},
