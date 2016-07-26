@@ -55,19 +55,6 @@
     <div class="panel panel-primary">
         <div class="panel-heading">Http Request Settings</div>
         <div class="panel-body">
-            <div class="input-group">
-                <span class="input-group-addon" id="basic-addon1">Set Hook Ids</span>
-                <select title="Choose Hook Ids" id="hook_id" multiple="multiple">
-                    <option>ALL_HOOKs</option>
-                    <option>TS_HTTP_READ_REQUEST_HDR_HOOK</option>
-                    <option>TS_HTTP_PRE_REMAP_HOOK</option>
-                    <option>TS_HTTP_SEND_REQUEST_HDR_HOOK</option>
-                    <option>TS_HTTP_READ_RESPONSE_HDR_HOOK</option>
-                    <option>TS_HTTP_SEND_RESPONSE_HDR_HOOK</option>
-                </select>
-            </div><!-- /input-group -->
-
-            <hr class="divider">
 
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Request URL</span>
@@ -97,8 +84,5 @@
 
     {# end container #}
     </div>
-    <script>
-        $('#hook_id').multiselect();
-    </script>
 </body>
 </html>

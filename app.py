@@ -37,14 +37,28 @@ def post_header():
 
 @app.route('/', methods=['GET'])
 def get_header_list():
-    hook_id, tag = get_hook_id_tag_query()
+    hooks, plugins = get_hook_id_tag_query()
 
     conn = mysql.connect()
     cursor = conn.cursor()
-    execute_sql_based_on_query(hook_id=hook_id, tag=tag, cursor=cursor)
 
+    execute_sql_based_on_query(hook_list=hooks, plugin_list=plugins, cursor=cursor)
     header_list = cursor.fetchall()
-    return render_template('header_list.html', header_dict_list=generate_header_dict_list(header_list=header_list))
+
+    cursor.execute('''SELECT DISTINCT hook_id
+                      FROM header_info
+                      WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)''')
+    # transfer tuple of tuple to list
+    hook_id_list = [hook[0] for hook in cursor.fetchall()]
+
+    cursor.execute('''SELECT DISTINCT plugin_name
+                      FROM header_info
+                      WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)''')
+    # transfer tuple of tuple to list
+    plugin_list = [plugin[0] for plugin in cursor.fetchall()]
+
+    return render_template('header_list.html', header_dict_list=generate_header_dict_list(header_list=header_list),
+                           hook_id_list=hook_id_list, plugin_list=plugin_list)
 
 
 @app.route('/settings', methods=['GET'])
@@ -52,43 +66,68 @@ def debug_setting():
     return render_template('settings.html')
 
 
-def execute_sql_based_on_query(hook_id, tag, cursor):
-    if hook_id != 'ALL':
-        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
-                          client_request, server_request, server_response, client_response
-                          FROM header_info
-                          WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND hook_id = %s
-                          ORDER BY state_machine_id DESC, sequence ASC ''', hook_id)
-    elif tag:
-        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
-                          client_request, server_request, server_response, client_response
-                          FROM header_info
-                          WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND tag = %s
-                          ORDER BY state_machine_id DESC, sequence ASC ''', tag)
+def execute_sql_based_on_query(hook_list, plugin_list, cursor):
+    if hook_list[0] == 'ALL_HOOKs' and plugin_list[0] == 'ALL_Plugins':
+        sql = '''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
+                 client_request, server_request, server_response, client_response
+                 FROM header_info
+                 WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)
+                 ORDER BY state_machine_id DESC, sequence ASC '''
+        cursor.execute(sql)
+    elif hook_list[0] == 'ALL_HOOKs':
+        sql = '''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
+                 client_request, server_request, server_response, client_response
+                 FROM header_info
+                 WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND plugin_name IN (%s)
+                 ORDER BY state_machine_id DESC, sequence ASC '''
+        format_strings = ','.join(['%s'] * len(plugin_list))
+        sql %= format_strings
+        cursor.execute(sql, tuple(plugin_list))
+    elif plugin_list[0] == 'ALL_Plugins':
+        sql = '''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
+                 client_request, server_request, server_response, client_response
+                 FROM header_info
+                 WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND hook_id IN (%s)
+                 ORDER BY state_machine_id DESC, sequence ASC '''
+        format_strings = ','.join(['%s'] * len(hook_list))
+        sql %= format_strings
+        cursor.execute(sql, tuple(hook_list))
     else:
-        cursor.execute('''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
-                          client_request, server_request, server_response, client_response
-                          FROM header_info
-                          WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info)
-                          ORDER BY state_machine_id DESC, sequence ASC ''')
+        sql = '''SELECT id, state_machine_id, hook_id, plugin_name, timestamps, tag, sequence,
+                 client_request, server_request, server_response, client_response
+                 FROM header_info
+                 WHERE state_machine_id = (SELECT MAX(state_machine_id) FROM header_info) AND hook_id IN (%s)'''
+
+        format_string1 = ','.join(['%s'] * len(hook_list))
+        sql %= format_string1
+
+        sql_part2 = ''' AND plugin_name IN (%s) ORDER BY state_machine_id DESC, sequence ASC '''
+        format_string2 = ','.join(['%s'] * len(plugin_list))
+        sql_part2 %= format_string2
+
+        sql += sql_part2
+        cursor.execute(sql, tuple(hook_list + plugin_list))
 
 
 def get_hook_id_tag_query():
-    valid_hook_id = set(['ALL', 'TS_HTTP_READ_REQUEST_HDR_HOOK', 'TS_HTTP_PRE_REMAP_HOOK',
-                         'TS_HTTP_SEND_REQUEST_HDR_HOOK', 'TS_HTTP_READ_RESPONSE_HDR_HOOK',
-                         'TS_HTTP_SEND_RESPONSE_HDR_HOOK'])
-    valid_tag = set(['Before plugin', 'After plugin'])
-
     # get query parameters
-    hook_id = request.args.get('hook_id')
-    if hook_id not in valid_hook_id:
-        hook_id = 'ALL'
+    hooks = request.args.get('hooks')
+    hook_list = []
+    # if we want to see all hooks, make sure all_hooks is at the beginning of the list
+    if hooks is None or hooks.find('ALL_HOOKs') != -1:
+        hook_list.append('ALL_HOOKs')
+    else:
+        hook_list = hooks.split(',')
 
-    tag = request.args.get('tag')
-    if tag not in valid_tag:
-        tag = None
+    plugins = request.args.get('plugins')
+    plugin_list = []
+    # if we want to see all plugins, make sure all plugins is at the beginning of the list
+    if plugins is None or plugins.find('ALL_Plugins') != -1:
+        plugin_list.append('ALL_Plugins')
+    else:
+        plugin_list = plugins.split(',')
 
-    return hook_id, tag
+    return hook_list, plugin_list
 
 
 def generate_header_dict_list(header_list):

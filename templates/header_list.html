@@ -6,9 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" >
     <link href="/static/css/header_list.css" rel="stylesheet" >
+    <script src="/static/js/header_list.js"></script>
     <link href="/static/css/jumbotron.css" rel="stylesheet" >
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <!-- Include multiselect plugin's CSS and JS: -->
+    <script type="text/javascript" src="/static/js/bootstrap-multiselect.js"></script>
+    <link rel="stylesheet" href="/static/css/bootstrap-multiselect.css" type="text/css"/>
 </head>
 
 <body>
@@ -20,33 +25,46 @@
         <p>A Traffic Server Plugin Monitor and Debug Tool</p>
     </div>
 
-    <div class="row" align="right">
-        <div class="col-sm-12">
-            <div class="btn-group">
-                <div class="btn-group">
-                    <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown">Hook ID
-                    <span class="glyphicon glyphicon-filter"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="/?hook_id=ALL">ALL</a></li>
-                        <li><a href="/?hook_id=TS_HTTP_READ_REQUEST_HDR_HOOK">TS_HTTP_READ_REQUEST_HDR_HOOK</a></li>
-                        <li><a href="/?hook_id=TS_HTTP_PRE_REMAP_HOOK">TS_HTTP_PRE_REMAP_HOOK</a></li>
-                        <li><a href="/?hook_id=TS_HTTP_SEND_REQUEST_HDR_HOOK">TS_HTTP_SEND_REQUEST_HDR_HOOK</a></li>
-                        <li><a href="/?hook_id=TS_HTTP_READ_RESPONSE_HDR_HOOK">TS_HTTP_READ_RESPONSE_HDR_HOOK</a></li>
-                        <li><a href="/?hook_id=TS_HTTP_SEND_RESPONSE_HDR_HOOK">TS_HTTP_SEND_RESPONSE_HDR_HOOK</a></li>
-                    </ul>
+    {# Filter settings #}
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-sm-10">
+                    <b>Filter Settings</b>
                 </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-info dropdown-toggle" type="button" data-toggle="dropdown">Tag
+                <div class="col-sm-2">
+                    <button id="filter" class="btn btn-success" type="button" onclick=filter_hook_plugin()>Filter
                     <span class="glyphicon glyphicon-filter"></span></button>
-                    <ul class="dropdown-menu">
-                        <li><a href="/?tag=Before plugin">Before plugin</a></li>
-                        <li><a href="/?tag=After plugin">After plugin</a></li>
-                    </ul>
                 </div>
             </div>
+
+        </div>
+        <div class="panel-body">
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1" style="height: 12px">Hook Ids </span>
+                <select id="hook_id" title="Choose Hook Ids" multiple="multiple">
+                    <option selected="selected">ALL_HOOKs</option>
+                    {% for hook_id in hook_id_list %}
+                    <option>{{ hook_id }}</option>
+                    {% endfor %}
+                </select>
+            </div><!-- /input-group -->
+
+            <hr class="divider">
+
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Plugin Names</span>
+                <select id="plugin_name" title="Choose Plugin Names" multiple="multiple">
+                    <option selected = "selected">ALL_Plugins</option>
+                    {% for plugin in plugin_list %}
+                    <option>{{ plugin }}</option>
+                    {% endfor %}
+                </select>
+            </div><!-- /input-group -->
         </div>
     </div>
+
+    <hr class="divider">
 
     {% for head_info in header_dict_list %}
     <div id = "{{ "panel-" ~ loop.index0 }}" class="panel panel-default" >
@@ -59,7 +77,7 @@
                     <b>Hook ID</b>: {{head_info.hook_id}}
                 </div>
                 <div class="col-sm-4">
-                    <b>Plugin</b>: {{head_info.plugin_name}}
+                    <b>Plugin Name</b>: {{head_info.plugin_name}}
                 </div>
                 <div class="col-sm-2">
                     <button type="button" class="btn btn-success" data-toggle="collapse"
@@ -155,5 +173,10 @@
     {# iterator of header_dict_list #}
     {% endfor %}
     </div>
+
+    <script>
+        $('#hook_id').multiselect();
+        $('#plugin_name').multiselect();
+    </script>
 </body>
 </html>
