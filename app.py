@@ -58,7 +58,8 @@ def get_header_list():
     plugin_list = [plugin[0] for plugin in cursor.fetchall()]
 
     return render_template('header_list.html', header_dict_list=generate_header_dict_list(header_list=header_list),
-                           hook_id_list=hook_id_list, plugin_list=plugin_list)
+                           hook_id_list=hook_id_list, plugin_list=plugin_list,
+                           selected_hook_id=hooks, selected_plugin=plugins)
 
 
 @app.route('/settings', methods=['GET'])

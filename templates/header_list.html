@@ -43,9 +43,9 @@
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1" style="height: 12px">Hook Ids </span>
                 <select id="hook_id" title="Choose Hook Ids" multiple="multiple">
-                    <option selected="selected">ALL_HOOKs</option>
+                    <option {% if 'ALL_HOOKs' in selected_hook_id %} selected="selected" {% endif %}>ALL_HOOKs</option>
                     {% for hook_id in hook_id_list %}
-                    <option>{{ hook_id }}</option>
+                    <option {% if hook_id in selected_hook_id %} selected="selected"{% endif %}>{{ hook_id }}</option>
                     {% endfor %}
                 </select>
             </div><!-- /input-group -->
@@ -55,9 +55,9 @@
             <div class="input-group">
                 <span class="input-group-addon" id="basic-addon1">Plugin Names</span>
                 <select id="plugin_name" title="Choose Plugin Names" multiple="multiple">
-                    <option selected = "selected">ALL_Plugins</option>
+                    <option {% if 'ALL_Plugins' in selected_plugin %} selected="selected" {% endif %}>ALL_Plugins</option>
                     {% for plugin in plugin_list %}
-                    <option>{{ plugin }}</option>
+                    <option {% if plugin in selected_plugin %} selected="selected"{% endif %}>{{ plugin }}</option>
                     {% endfor %}
                 </select>
             </div><!-- /input-group -->
